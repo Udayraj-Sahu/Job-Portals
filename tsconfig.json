@@ -1,0 +1,53 @@
+{
+	"compilerOptions": {
+		"target": "ES2017",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"jsx": "preserve",
+		"incremental": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
+		"paths": {
+			"@/*": ["./*"]
+		}
+	},
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		"app/(public)/layout.tsx",
+		"app/api/admin/users/route.js",
+		"prisma/seed.js",
+		"middlewares/authAdmin.js",
+		"app/admin/page.jsx",
+		"app/hr/dashboard/applicants/jobs/post-job/page.jsx",
+		"app/hr/dashboard/applicants/jobs/manage/page.jsx",
+		"middlewares/authHR.js",
+		"app/api/hr/applications/route.js",
+		"app/job/[id]/page.jsx",
+		"app/hr/dashboard/applicants/page.jsx",
+		"app/api/admin/users/[id]/route.js",
+		"app/api/hr/jobs/route.js",
+		"app/hr/dashboard/page.jsx",
+		"components/DashboardView.jsx",
+		"components/MyJobsView.jsx",
+		"app/hr/dashboard/jobs/manage/page1.jsx",
+		"inngest/client.js",
+		"inngest/functions.js",
+		"lib/prisma.js",
+		"app/page.jsx"
+, "app/layout.jsx", "components/Navbar.jsx", "components/Footer.jsx", "components/ContactButtons.jsx", "components/JobCard.jsx", "components/SearchFilters.jsx"	],
+	"exclude": ["node_modules"]
+}
