@@ -54,13 +54,6 @@ export default function Navbar() {
 							}`}>
 							Jobs
 						</Link>
-						<Link href="/hrlogin">
-							<Button
-								variant="outline"
-								className="rounded-lg border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors">
-								HR Login
-							</Button>
-						</Link>
 					</div>
 
 					{/* Mobile Menu Button */}
