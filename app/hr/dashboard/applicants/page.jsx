@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 import { supabase } from "../../../lib/supabaseClient";
 
 export default function ApplicantsPage() {
@@ -10,7 +11,7 @@ export default function ApplicantsPage() {
 	const [selectedJob, setSelectedJob] = useState("all");
 	const [loading, setLoading] = useState(true);
 
-	// Load all jobs and applications
+	// Load jobs + applications
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -27,6 +28,7 @@ export default function ApplicantsPage() {
           job_id,
           jobs(title)
         `);
+
 				if (appsRes.error) throw appsRes.error;
 				setApplications(appsRes.data || []);
 			} catch (e) {
@@ -43,17 +45,38 @@ export default function ApplicantsPage() {
 			? applications
 			: applications.filter((a) => a.job_id === selectedJob);
 
-	if (loading) return <p className="p-6">Loading applicants...</p>;
+	if (loading)
+		return (
+			<div className="p-10 text-center text-gray-500 animate-pulse">
+				Loading applicants...
+			</div>
+		);
 
 	return (
-		<div className="max-w-5xl mx-auto bg-white border rounded-lg shadow-sm p-6">
-			<h1 className="text-2xl font-bold mb-6">Job Applications</h1>
+		<motion.div
+			initial={{ opacity: 0, y: 20 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ duration: 0.4, ease: "easeOut" }}
+			className="max-w-6xl mx-auto bg-white border border-gray-100 rounded-2xl shadow-sm p-6 mt-8">
+			<motion.h1
+				initial={{ opacity: 0, y: -10 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.4 }}
+				className="text-2xl font-semibold mb-6 text-gray-900">
+				Job Applications
+			</motion.h1>
 
-			{/* Filter dropdown */}
-			<div className="flex items-center gap-3 mb-4">
-				<label className="font-medium">Filter by Job:</label>
+			{/* Filter */}
+			<motion.div
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				transition={{ delay: 0.2 }}
+				className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
+				<label className="font-medium text-gray-700">
+					Filter by Job:
+				</label>
 				<select
-					className="border p-2 rounded"
+					className="border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition w-full sm:w-auto"
 					value={selectedJob}
 					onChange={(e) => setSelectedJob(e.target.value)}>
 					<option value="all">All Jobs</option>
@@ -63,52 +86,63 @@ export default function ApplicantsPage() {
 						</option>
 					))}
 				</select>
-			</div>
+			</motion.div>
 
+			{/* Table */}
 			{filteredApps.length === 0 ? (
-				<p className="text-gray-500">
+				<motion.p
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					className="text-gray-500 text-center py-10">
 					No applicants found for this selection.
-				</p>
+				</motion.p>
 			) : (
-				<div className="overflow-x-auto">
-					<table className="w-full border border-gray-200 rounded-lg">
-						<thead className="bg-gray-100 text-gray-700">
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ delay: 0.3 }}
+					className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
+					<table className="min-w-full border-collapse bg-white text-left text-sm text-gray-600">
+						<thead className="bg-gray-50 text-gray-700 text-sm font-medium">
 							<tr>
-								<th className="py-2 px-3 border">Name</th>
-								<th className="py-2 px-3 border">Email</th>
-								<th className="py-2 px-3 border">Phone</th>
-								<th className="py-2 px-3 border">
+								<th className="py-3 px-4 border-b">Name</th>
+								<th className="py-3 px-4 border-b">Email</th>
+								<th className="py-3 px-4 border-b">Phone</th>
+								<th className="py-3 px-4 border-b">
 									Job Applied
 								</th>
-								<th className="py-2 px-3 border">Applied On</th>
+								<th className="py-3 px-4 border-b">
+									Applied On
+								</th>
 							</tr>
 						</thead>
 						<tbody>
-							{filteredApps.map((a) => (
-								<tr key={a.id} className="hover:bg-gray-50">
-									<td className="py-2 px-3 border">
+							{filteredApps.map((a, idx) => (
+								<motion.tr
+									key={a.id}
+									initial={{ opacity: 0, y: 10 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ delay: idx * 0.05 }}
+									className="hover:bg-blue-50 transition-colors border-b last:border-0">
+									<td className="py-3 px-4 font-medium text-gray-900">
 										{a.name}
 									</td>
-									<td className="py-2 px-3 border">
-										{a.email}
-									</td>
-									<td className="py-2 px-3 border">
-										{a.phone}
-									</td>
-									<td className="py-2 px-3 border text-blue-600 font-medium">
+									<td className="py-3 px-4">{a.email}</td>
+									<td className="py-3 px-4">{a.phone}</td>
+									<td className="py-3 px-4 text-blue-600 font-medium">
 										{a.jobs?.title || "-"}
 									</td>
-									<td className="py-2 px-3 border text-gray-500 text-sm">
+									<td className="py-3 px-4 text-gray-500 text-sm">
 										{new Date(
 											a.created_at
 										).toLocaleDateString()}
 									</td>
-								</tr>
+								</motion.tr>
 							))}
 						</tbody>
 					</table>
-				</div>
+				</motion.div>
 			)}
-		</div>
+		</motion.div>
 	);
 }

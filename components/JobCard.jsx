@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { MapPin, Briefcase, DollarSign } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -8,51 +9,62 @@ import { ContactButtons } from "./ContactButtons";
 
 export function JobCard({ job }) {
 	return (
-		<Card className="hover:shadow-lg transition-shadow duration-300 border border-border rounded-lg">
-			<CardContent className="p-6">
-				<div className="flex flex-col gap-4">
+		<motion.div
+			initial={{ opacity: 0, y: 20 }}
+			animate={{ opacity: 1, y: 0 }}
+			whileHover={{
+				scale: 1.02,
+				boxShadow: "0px 8px 24px rgba(0,0,0,0.05)",
+			}}
+			whileTap={{ scale: 0.98 }}
+			transition={{ duration: 0.3, ease: "easeOut" }}
+			className="rounded-xl">
+			<Card className="border border-gray-100 rounded-2xl bg-white transition-all duration-300 overflow-hidden">
+				<CardContent className="p-6 flex flex-col gap-4">
+					{/* Title + Description */}
 					<div>
-						<h3 className="mb-2">{job.title}</h3>
-						<p className="text-[#6B7280] line-clamp-2">
+						<h3 className="text-lg font-semibold text-gray-900 mb-1 tracking-tight">
+							{job.title}
+						</h3>
+						<p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
 							{job.description}
 						</p>
 					</div>
 
-					<div className="flex flex-wrap gap-4">
-						<div className="flex items-center gap-2 text-[#6B7280]">
-							<MapPin className="w-4 h-4 text-[#2563EB]" />
-							<span className="text-sm">
-								{job.location || "—"}
-							</span>
+					{/* Meta Info */}
+					<div className="flex flex-wrap gap-4 text-sm text-gray-500">
+						<div className="flex items-center gap-2">
+							<MapPin className="w-4 h-4 text-blue-600" />
+							<span>{job.location || "—"}</span>
 						</div>
-						<div className="flex items-center gap-2 text-[#6B7280]">
-							<Briefcase className="w-4 h-4 text-[#16A34A]" />
-							<span className="text-sm">
-								{job.experience || "—"}
-							</span>
+						<div className="flex items-center gap-2">
+							<Briefcase className="w-4 h-4 text-green-600" />
+							<span>{job.experience || "—"}</span>
 						</div>
-						{job.salary ? (
-							<div className="flex items-center gap-2 text-[#6B7280]">
-								<DollarSign className="w-4 h-4 text-[#FBBF24]" />
-								<span className="text-sm">{job.salary}</span>
+						{job.salary && (
+							<div className="flex items-center gap-2">
+								<DollarSign className="w-4 h-4 text-amber-400" />
+								<span>{job.salary}</span>
 							</div>
-						) : null}
+						)}
 					</div>
 
-					<div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-border">
+					{/* Buttons */}
+					<div className="flex flex-col sm:flex-row gap-3 pt-3 border-t border-gray-100">
 						<ContactButtons
 							email={job.email}
 							phone={job.phone}
 							size="sm"
+							className="w-full sm:w-auto"
 						/>
 						<Link href={`/job/${job.id}`} className="sm:ml-auto">
-							<Button className="w-full sm:w-auto bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg">
+							<Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm">
 								View Details
 							</Button>
 						</Link>
 					</div>
-				</div>
-			</CardContent>
-		</Card>
+				</CardContent>
+			</Card>
+		</motion.div>
 	);
 }

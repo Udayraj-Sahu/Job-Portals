@@ -12,8 +12,6 @@ export async function POST(req) {
 		const prompt = `
       You are an HR assistant who writes job descriptions based on a company's provided image and job details.
 
-      Analyze this job-related image:
-      ${image_url ? `Image URL: ${image_url}` : "No image provided"}
 
       Based on the visual content and the job details below:
       - Job Title: ${title}

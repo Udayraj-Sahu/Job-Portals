@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { supabase } from "../../../lib/supabaseClient";
 import { toast } from "sonner";
 
@@ -15,7 +16,7 @@ export default function PostJobPage() {
 	const [imageUrl, setImageUrl] = useState("");
 	const [loading, setLoading] = useState(false);
 
-	// 🧠 Upload image to Supabase first
+	// Upload image
 	const uploadImage = async () => {
 		if (!file) {
 			toast.error("Please select an image first!");
@@ -48,7 +49,7 @@ export default function PostJobPage() {
 		}
 	};
 
-	// 🧠 Generate AI description using uploaded image + form info
+	// Generate AI description
 	const handleGenerateDesc = async () => {
 		if (!file || !title)
 			return toast.error(
@@ -57,12 +58,10 @@ export default function PostJobPage() {
 
 		setLoading(true);
 		try {
-			// Upload image if not uploaded yet
 			const imgUrl = imageUrl || (await uploadImage());
 			if (!imgUrl) throw new Error("Image upload failed.");
 			setImageUrl(imgUrl);
 
-			// Call AI route with job info + image URL
 			const res = await fetch("/api/ai/job-description", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -91,7 +90,7 @@ export default function PostJobPage() {
 		}
 	};
 
-	// ✅ Handle final form submission
+	// Submit job
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -117,7 +116,7 @@ export default function PostJobPage() {
 			if (!res.ok) throw new Error("Job insert failed");
 
 			toast.success("Job posted successfully!");
-			// Reset
+			// Reset form
 			setTitle("");
 			setPositions(1);
 			setLocation("");
@@ -135,85 +134,145 @@ export default function PostJobPage() {
 	};
 
 	return (
-		<div className="max-w-2xl mx-auto bg-white rounded-lg border p-6 shadow-sm">
-			<h1 className="text-2xl font-bold mb-4">Post a New Job</h1>
-			<form onSubmit={handleSubmit} className="space-y-4">
-				<input
-					type="text"
-					placeholder="Job Title"
-					className="border p-2 w-full rounded"
-					value={title}
-					onChange={(e) => setTitle(e.target.value)}
-					required
-				/>
+		<motion.div
+			initial={{ opacity: 0, y: 20 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ duration: 0.4, ease: "easeOut" }}
+			className="max-w-2xl mx-auto bg-white border border-gray-100 rounded-2xl p-6 shadow-sm mt-8">
+			<motion.h1
+				initial={{ opacity: 0, y: -10 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.3 }}
+				className="text-2xl font-semibold mb-6 text-gray-900">
+				Post a New Job
+			</motion.h1>
 
-				<div className="grid grid-cols-2 gap-3">
-					<input
-						type="number"
-						placeholder="Positions"
-						className="border p-2 rounded"
-						value={positions}
-						onChange={(e) => setPositions(e.target.value)}
-					/>
+			<motion.form
+				onSubmit={handleSubmit}
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				transition={{ delay: 0.2 }}
+				className="space-y-5">
+				{/* Job Title */}
+				<div>
+					<label className="text-sm font-medium text-gray-700">
+						Job Title
+					</label>
 					<input
 						type="text"
-						placeholder="Location"
-						className="border p-2 rounded"
-						value={location}
-						onChange={(e) => setLocation(e.target.value)}
+						placeholder="e.g. React Developer"
+						className="mt-1 border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+						value={title}
+						onChange={(e) => setTitle(e.target.value)}
+						required
 					/>
 				</div>
 
-				<div className="grid grid-cols-2 gap-3">
+				{/* Positions & Location */}
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<div>
+						<label className="text-sm font-medium text-gray-700">
+							Positions
+						</label>
+						<input
+							type="number"
+							placeholder="e.g. 2"
+							className="mt-1 border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+							value={positions}
+							onChange={(e) => setPositions(e.target.value)}
+						/>
+					</div>
+					<div>
+						<label className="text-sm font-medium text-gray-700">
+							Location
+						</label>
+						<input
+							type="text"
+							placeholder="e.g. Bangalore"
+							className="mt-1 border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+							value={location}
+							onChange={(e) => setLocation(e.target.value)}
+						/>
+					</div>
+				</div>
+
+				{/* Experience & Salary */}
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<div>
+						<label className="text-sm font-medium text-gray-700">
+							Experience
+						</label>
+						<input
+							type="text"
+							placeholder="e.g. 1-3 years"
+							className="mt-1 border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+							value={experience}
+							onChange={(e) => setExperience(e.target.value)}
+						/>
+					</div>
+					<div>
+						<label className="text-sm font-medium text-gray-700">
+							Salary
+						</label>
+						<input
+							type="text"
+							placeholder="e.g. ₹6 LPA"
+							className="mt-1 border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+							value={salary}
+							onChange={(e) => setSalary(e.target.value)}
+						/>
+					</div>
+				</div>
+
+				{/* Upload Image */}
+				<div>
+					<label className="text-sm font-medium text-gray-700">
+						Upload Job Image
+					</label>
 					<input
-						type="text"
-						placeholder="Experience (e.g. 2-5 yrs)"
-						className="border p-2 rounded"
-						value={experience}
-						onChange={(e) => setExperience(e.target.value)}
-					/>
-					<input
-						type="text"
-						placeholder="Salary (optional)"
-						className="border p-2 rounded"
-						value={salary}
-						onChange={(e) => setSalary(e.target.value)}
+						type="file"
+						accept="image/*"
+						className="mt-1 border border-gray-300 p-2.5 rounded-lg bg-white w-full focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+						onChange={(e) => setFile(e.target.files?.[0] || null)}
 					/>
 				</div>
 
-				<input
-					type="file"
-					accept="image/*"
-					className="border p-2 rounded bg-white"
-					onChange={(e) => setFile(e.target.files?.[0] || null)}
-				/>
-
-				<div className="space-y-2">
+				{/* Description */}
+				<div>
+					<label className="text-sm font-medium text-gray-700">
+						Job Description
+					</label>
 					<textarea
-						placeholder="Job Description (AI generated)"
+						placeholder="Job Description (can be AI generated)"
 						rows={6}
-						className="border p-2 w-full rounded"
+						className="mt-1 border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
 						value={desc}
 						onChange={(e) => setDesc(e.target.value)}
 					/>
-					<button
+
+					<motion.button
 						type="button"
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}
 						onClick={handleGenerateDesc}
 						disabled={loading}
-						className="px-3 py-1 bg-blue-600 text-white rounded-lg">
+						className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-sm">
 						{loading
 							? "Generating..."
 							: "Generate Description with AI"}
-					</button>
+					</motion.button>
 				</div>
 
-				<button
+				{/* Submit */}
+				<motion.button
+					whileHover={{ scale: 1.05 }}
+					whileTap={{ scale: 0.97 }}
 					type="submit"
 					disabled={loading}
-					className="bg-green-600 text-white px-4 py-2 rounded-lg w-full">
+					className="bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 transition-all shadow-sm w-full">
 					{loading ? "Posting..." : "Post Job"}
-				</button>
-			</form>
-		</div>
+				</motion.button>
+			</motion.form>
+		</motion.div>
 	);
 }
